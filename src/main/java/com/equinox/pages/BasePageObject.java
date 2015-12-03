@@ -2,7 +2,9 @@ package com.equinox.pages;
 
 import org.openqa.selenium.WebDriver;
 
-public class BasePageObject {
+import com.equinox.utils.WebUtils;
+
+public class BasePageObject extends WebUtils {
 
 	public static WebDriver Driver;
 	protected final WebDriver driver;

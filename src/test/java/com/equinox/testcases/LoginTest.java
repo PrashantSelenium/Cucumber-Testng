@@ -12,21 +12,21 @@ import com.equinox.utils.WebUtils;
 
 public class LoginTest extends BaseQa {
 
-	@BeforeTest
-	public void setup() {
-		getDefaultUserLoginPage();
-		PageFactory.initElements(driver, LoginPage.class);
-		new WebUtils().waitForElementPresent(LoginPage.MEMBER_LOG_IN, Integer.parseInt(getProperty("elementwait")));
-		driver.findElement(LoginPage.MEMBER_LOG_IN).click();
-	}
+//	@BeforeTest
+//	public void setup() {
+//		getDefaultUserLoginPage();
+////		PageFactory.initElements(driver, LoginPage.class);
+//		
+//	}
 
-	@Test
+	/*@Test
 	public void test() {
+//		generateReport();
 		type(LoginPage.Login_EMAIL, getProperty("defaultUser"));
 		type(LoginPage.Password, getProperty("defaultPassword"));
 		click(LoginPage.LOGIN_BUTTON);
 		sleep(3000);
-		Assert.assertTrue((driver.getTitle().contains("salesforce.com")), "Not able to Land Home Page");
-	}
+		Assert.assertTrue((driver.getTitle().contains("EQUINOX - IT'S NOT FITNESS. IT'S LIFE.")), "Not able to Land Home Page");
+	}*/
 
 }

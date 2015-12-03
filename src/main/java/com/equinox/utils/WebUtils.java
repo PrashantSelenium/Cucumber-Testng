@@ -4,14 +4,19 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Properties;
+
+import net.masterthought.cucumber.ReportBuilder;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.log4j.Logger;
 import org.apache.log4j.xml.DOMConfigurator;
+import org.apache.velocity.exception.VelocityException;
 import org.openqa.selenium.By;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
@@ -35,7 +40,7 @@ public class WebUtils {
 	static {
 				
 		try {
-			DOMConfigurator.configure("src/test/resources/log4j.xml");
+			DOMConfigurator.configure(currentdir+"/src/test/resources/log4j.xml");
 			loadProperties("web.properties");
 			log.info("Log4j & Property files Initiating.....");
 
@@ -66,20 +71,34 @@ public class WebUtils {
 		driver.get(getProperty("baseUrls"));
 		driver.manage().window().maximize();
 		BasePageObject.Driver = driver;
+		Driver=driver;
 		return driver;
 	}
 
 	private WebDriver newWebdriver() {
 		// TODO Auto-generated method stub
 		String Browser = getProperty("driverType");
+		
+		
+		
+		
+		
 		if (Browser.equalsIgnoreCase("firefox")) {
 			driver = new FirefoxDriver();
 			log.info("Browser Initiated");
 		} else if (Browser.equalsIgnoreCase("chrome")) {
-			System.setProperty("webdriver.chrome.driver",
-					"Drivers\\chromedriver.exe");
-			driver = new ChromeDriver();
-			log.info("Browser Initiated");
+			
+			String ChromeDriver_binary_name = "";
+			String osname = System.getProperty("os.name");
+			if(osname.toLowerCase().contains("windows")){
+				ChromeDriver_binary_name = "chromedriver.exe";
+			}else{
+				ChromeDriver_binary_name = "chromedriver";
+			}
+					String chromepath = currentdir+"/Drivers/" + ChromeDriver_binary_name;
+					System.setProperty("webdriver.chrome.driver", chromepath);
+					driver = new ChromeDriver();
+					log.info("Browser Initiated");
 		} else if (Browser.equalsIgnoreCase("IE")) {
 			System.setProperty(
 					"webdriver.ie.driver",
@@ -106,6 +125,7 @@ public class WebUtils {
 	public  void click(By element)  {
 		
 		try {
+			waitForElementPresent(element, 30);
 			driver.findElement(element).click();
 		} catch (Throwable t) {
 			CaptureScreenshot();
@@ -194,6 +214,38 @@ public class WebUtils {
 		return value;
 
 	}
-	
+	public void generateReport(){
+		File reportOutputDirectory = new File(currentdir+"/target");
+		List<String> list = new ArrayList<String>();
+		list.add(currentdir+"/cucumber-report.json");
+//		list.add("cucumber-report.json");
+
+		String pluginUrlPath = "";
+		String buildNumber = "1";
+		String buildProject = "cucumber-jvm";
+		boolean skippedFails = true;
+		boolean pendingFails = true;
+		boolean undefinedFails = true;
+		boolean missingFails = true;
+		boolean flashCharts = true;
+		boolean runWithJenkins = false;
+		boolean highCharts = false;
+		boolean parallelTesting = false;
+
+		ReportBuilder reportBuilder;
+		try {
+			reportBuilder = new ReportBuilder(list, reportOutputDirectory, pluginUrlPath, buildNumber,
+			    buildProject, skippedFails, pendingFails, undefinedFails, missingFails, flashCharts, runWithJenkins,
+			    highCharts, buildProject, parallelTesting, parallelTesting);
+			reportBuilder.generateReports();
+		} catch (VelocityException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
 
 }

@@ -8,7 +8,7 @@ import com.equinox.utils.WebUtils;
 
 
 
-public class LoginPage    {
+public class LoginPage extends BasePageObject  {
 
 
 	
@@ -19,7 +19,8 @@ public class LoginPage    {
 
 	public LoginPage() {
 		// TODO Auto-generated constructor stub
-		
+		waitForElementPresent(LoginPage.MEMBER_LOG_IN, Integer.parseInt(getProperty("elementwait")));
+		driver.findElement(LoginPage.MEMBER_LOG_IN).click();
 	}
 
 }
